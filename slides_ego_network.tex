@@ -1,0 +1,542 @@
+\documentclass{beamer}
+% , serif, professionalfont
+%\documentclass{beamer}
+\usepackage{pxfonts}
+\usepackage{eulervm}
+
+\usepackage{amsthm,amsmath,amsbsy,amssymb,amsfonts,pstricks,fancybox,bbm,pxfonts,dsfont,marvosym,pifont,fourier}
+
+\usepackage{pstricks}
+
+\usepackage{comment}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc} 
+\usepackage[francais]{babel}
+
+\usepackage[]{algorithm2e}
+%\mode<article> % only for the article version
+%{
+%  \usepackage{beamerbasearticle}
+%  \usepackage{fullpage}
+%  \usepackage{hyperref}
+%}
+
+
+%\usepackage{pstricks}
+%\usepackage{tikz}
+%\usetikzlibrary{plothandlers,plotmarks,arrows,automata}
+%\usepackage{amsmath,amssymb}
+
+%\usepackage{colortbl}
+%\usepackage{mathrsfs}
+%\renewcommand{\mathcal}{\mathscr}
+%\usepackage{enumerate}
+%\usepackage{lmodern}
+
+
+\newcommand{\disp}{\displaystyle}
+\newcommand{\ds}{\displaystyle}
+\newcommand{\vs}{\bigskip}
+\newcommand{\esp}{\mathbb E}
+\newcommand{\prob}{\mathbb P}
+\newcommand{\ee}{\mathrm e}
+\newcommand{\ii}{\mathrm i}
+\newcommand{\dd}{\text{d}}
+\newcommand{\Int}{\mathrm{int}\,}
+\newcommand{\Cl}{\mathrm{adh}\,}
+\newcommand{\Supp}{\operatorname{Supp}}
+\newcommand{\Card}{\operatorname{Card}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Ave}{\operatorname{Ave}}
+%\renewcommand{\mathcal}{\mathscr}
+
+\newcommand{\logit}{\operatorname{logit}}
+\renewcommand{\epsilon}{\varepsilon}
+\newcommand{\eps}{\varepsilon}
+\newfont{\manfnt}{manfnt}
+%\newcommand{\danger}{{\manfnt\symbol{'177}}}
+\newcommand{\mdanger}{\marginpar[\hfill\danger]{\danger\hfill}}
+\newcommand{\new}{{\manfnt\symbol{30}}}
+\newcommand{\mnew}{\marginpar[\hfill\new]{\hfill\new}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\tbrown}[1]{\textcolor{brown}{#1}}
+\DeclareTextFontCommand{\hershey}{\fontfamily{hscs}\selectfont}
+\newcommand{\tb}{\color{brown}}
+
+%\usetheme{Frankfurt}
+%\usetheme{Boadilla}
+\usetheme{Boadilla}%Pittsburgh}
+%\usecolortheme{seahorse}
+\usecolortheme{rose}
+
+
+\newcommand{\R}{\mathop{\mathbb{R}}}
+\newcommand{\N}{\mathop{\mathbb{N}}}
+\newcommand{\EE}{\mathbb{E}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\LL}{\mathbb{L}}
+\newcommand{\F}{\mathcal{F}}
+\def\argmin{\mathrm{argmin}}
+\def\argmax{\mathrm{argmax}}
+\def\1{1}
+\definecolor{lightblue}{RGB}{223, 242, 255}
+\definecolor{lightred}{RGB}{254,191,210}
+
+
+
+\makeatletter
+\newcommand{\setnextsection}[1]{%
+  \setcounter{section}{\numexpr#1-1\relax}%
+  \beamer@tocsectionnumber=\numexpr#1-1\relax\space}
+\makeatother
+
+
+\setbeamertemplate{itemize items}[triangle]
+\setbeamercolor{itemize item}{fg=brown}
+\setbeamertemplate{enumerate items}[circle]
+\setbeamercolor{item projected}{bg=brown}
+\setbeamercolor{block title}{fg=brown!100, bg=gray!20}
+\setbeamercolor{block body}{bg=gray!10}
+\graphicspath{{fig/}}
+
+\title[Ego-Network]{Analyse de réseaux égo-centrés}
+\author[Nicolas Verzelen]{Nicolas~Verzelen}
+% \institute{  Université Montpellier 2\\~\\
+% \onslide<2>{
+% \includegraphics[width=3cm]{marin.jpg} ~~
+% \includegraphics[width=2.7cm]{xian.jpg} ~~
+% \includegraphics[width=1.5cm]{cornuet.jpg}
+% }
+% }
+\institute[INRA]{INRA}
+\date[Formation Analyse de réseaux]{}
+%\subject{ABC in London}
+
+\AtBeginSection[]{%
+  \begin{frame}<beamer>
+    \frametitle{Plan}
+    \tableofcontents
+  \end{frame}
+}
+
+\begin{document}
+
+
+
+
+
+
+
+
+
+
+
+\section{Ego-réseau et une analyse ego-centrée?}
+
+
+
+\begin{frame}
+ \frametitle{D'un réseau à des réseaux ego-centrés}
+ 
+ {\bf Définition}: Le réseau ego-centré d'un noeud est le réseau formé par un noeud et ses voisins. 
+ 
+ \begin{center}
+ \includegraphics[width= 5cm]{reseau1.png} 
+ 
+ \includegraphics[width= 1.5cm]{egonetwork_1.png} 
+  
+ \end{center}
+
+ 
+ 
+\end{frame}
+
+
+\begin{frame}
+ \frametitle{Qu'est-ce qu'une analyse ego-centrée?}
+ 
+ 
+
+Dans des analyses ego-centrées, on s'intéresse typiquement à des indicateurs/ mesures sur les noeuds (ex: degrés) . 
+
+ 
+ 
+
+ \medskip 
+ 
+ En calculant des indicateurs sur les noeuds, on peut ensuite les incorporer dans des méthodes d'analyse statistiques plus classiques.
+ 
+ 
+ {\bf Ex: } Pour expliquer le nombre d'espèces cultivées dans une ferme, ajouter à des variables plus classique (ex: taille de la ferme) le degré de la ferme dans le réseau d'échanges. 
+ 
+ 
+ 
+ \bigskip 
+ 
+ 
+ Les analyses égo-centrées sont surtout intéressantes si les questions d'intérêt portent sur les noeuds. 
+ 
+ 
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}
+\frametitle{Cet exposé }
+
+
+\begin{itemize}
+ \item Quelles analyses lorsque le réseau  {\color{red} faiblement échantillonné}  de type  {\color{red} ego-centré} ou {\color{red} snow-ball}? 
+ \item Procédures d'analyse {\color{red} Ego-centrées}
+\end{itemize}
+
+
+ 
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Echantillonnage et ego-réseaux}
+
+
+
+\begin{frame}
+\frametitle{Echantillonnage de réseaux} 
+ 
+ Le Réseau est rarement  complétement observé.
+ 
+ 
+ \begin{center}
+ \includegraphics[width= 5cm]{reseau1.png}  
+ \end{center}
+
+ 
+ 
+ On s'intéresse ici à des données pour lesquelles l'effort d'échantillonnage est faible.
+\end{frame}
+
+
+
+
+\begin{frame}
+ \frametitle{Echantillonnage d'ego-réseaux}
+ 
+ {\bf Observations}: Collection d'ego-réseaux 
+ 
+ \begin{center}
+ \includegraphics[width= 5cm]{egonetwork.png}  
+ \end{center}
+
+ 
+ 
+ Deux types de noeuds
+ \begin{itemize}
+  \item Noeud explorés
+  \item Noeud découverts mais non explorés (en rouge)
+ \end{itemize}
+
+{\bf Difficulté}: Si l'effort d'échantillonnage est faible (au regard de la taille du réseau), 
+ 
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Echantillonnage en boule de neige}
+
+{\bf Objectif}: Mieux découvrir localement le réseau
+
+
+ \begin{center}
+ \begin{figure}
+ \includegraphics[width= 4.5cm]{egonetwork.png}\hspace{1cm }\includegraphics[width= 5cm]{snowball2.png}   \caption{Etapes 1 et 2 de la boule de neige} 
+ \end{figure}
+
+ 
+ 
+
+ \end{center}
+
+{\bf Principe}: Echantillonnage d'ego-réseaux puis  exploration de certain noeuds découverts à la première étape,\ldots, 
+
+
+
+
+
+
+
+
+\end{frame}
+
+
+
+
+
+\section{Analyse globale pour des ego-réseaux (ou des boules de neige)}
+
+
+\begin{frame}
+\frametitle{Objectifs}
+
+\begin{itemize}
+ \item Quelle caractéristique globale peut-on estimer avec des ego-reseaux? 
+ \item Quelle caractéristique globale peut-on estimer avec un échantillonnage boule de neige?  
+\end{itemize}
+
+
+\vspace{1cm}
+
+{\bf Package utilisé}: {\it igraph}
+ 
+\end{frame}
+
+
+
+
+\begin{frame}
+ \frametitle{Distribution des degrés}
+ 
+ {\bf Caractéristiques}: 
+ \begin{itemize}
+  \item Toujours possible à estimer.
+  \item Attention à ne pas compter les degrés des noeuds non visités!
+  \item (biais vers les hauts degrés pour l'échantillonnage boule de neige)
+ \end{itemize}
+
+ 
+ 
+ 
+ 
+\end{frame}
+
+
+
+
+\begin{frame}
+ \frametitle{Homophilie}
+ 
+ {\it Homophilie ou assortativité}: Propension d'individus semblables (ex: âges, liens de parenté,...) à être connecté.
+ 
+ 
+ \medskip 
+ 
+ {\bf Caractéristiques}: 
+ \begin{itemize}
+  \item Nécessite de connaître les caractéristiques (ex: âge, liens de parenté) des individus non visités. 
+  \item Sinon ... uniquement estimable à partir des couples d'individus visités. 
+ \end{itemize}
+
+ 
+\end{frame}
+
+\begin{frame}
+ \frametitle{Reciprocité}
+ 
+ Pour un réseaux dirigé, propension de deux noeuds à avoir deux liens réciproque.   
+ 
+ 
+ \medskip 
+ 
+ {\bf Caractéristiques}: 
+ \begin{itemize}
+  \item Nécessite de connaître les arêtes partant et arrivant des noeuds visités. 
+  \item Sinon ... uniquement estimable à partir des couples d'individus visités. 
+ \end{itemize}
+
+ 
+
+ 
+\end{frame}
+
+
+\begin{frame}
+ \frametitle{Transitivité}
+ 
+ Propension de deux noeud reliés à un même noeud à être relié entre eux. 
+ 
+ 
+ 
+ 
+ \bigskip 
+ 
+ {\bf Caractéristiques}: 
+ \begin{itemize}
+  \item Nécessite au moins un échantillonnage boule de neige à 2 étapes.
+ \end{itemize}
+ 
+ 
+ 
+\end{frame}
+
+
+
+
+
+
+\section{Analyse ego-centrée}
+
+
+\begin{frame}
+ 
+ 
+ {\bf Principe général}: 
+ \begin{enumerate}
+  \item Calculer des indicateurs de la position du noeuds dans le   du réseau
+  \item Comparer ces indicateurs à d'autres caractéristiques du noeuds
+ \end{enumerate}
+
+ 
+ 
+ 
+ 
+\end{frame}
+
+\subsection{Indicateurs de la position du noeud dans le réseau}
+
+
+
+
+\begin{frame}
+
+
+
+\frametitle{Différents indicateur d'importance/centralité des noeuds}
+
+
+
+{\it Sensible =  nécessite un effort d'échantillonnage important!} 
+
+
+\medskip 
+
+{\bf Mesures de centralité}
+\begin{enumerate}
+ \item Degree [Peu sensible]
+ \item Eigen-centrality [Sensible!]
+ \item Closeness [Sensible!]
+ \item Betweeness [Très sensible!!]
+\end{enumerate}
+
+
+
+
+\end{frame}
+
+
+
+
+
+
+
+\subsection{Relier la position du noeud et caractéristiques du noeud }
+
+
+
+
+\begin{frame}
+ \frametitle{Lier centralité et caractéristiques du noeud}
+ 
+ la comparer à d'autres caractéristique du noeud (âge, richesse), en utilisant des méthodes statistiques multivariées classique: 
+ \begin{itemize}
+  \item Régression linéaire, régression logistique 
+  \item tests du $\chi^2$. 
+  \item Analyse en composantes principales, ...
+ \end{itemize}
+
+ 
+ 
+\end{frame}
+
+
+
+
+
+
+\subsection{Prédiction de lien}
+
+\begin{frame}
+\frametitle{Prédiction de lien}
+
+Il ne s'agit pas à proprement d'une 'ego-analyse'. 
+
+\bigskip
+
+{\bf Objectif}: Essayer de prédire/expliquer la présence de lien à partir de caractéristique des noeuds (ex: Age des protagonistes)  ou du couple de noeud (ex: lien de parenté)
+
+
+\medskip 
+
+
+{\bf Outils}: Régression logistique (ou linéaire)
+
+
+
+
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Bibliographie}
+
+
+\begin{itemize}
+ \item Eric D. Kolaczyk, Gábor Csárdi (auth.)- {\bf Statistical Analysis of Network Data with R}-Springer-Verlag New York (2014)
+ \item 
+\end{itemize}
+
+
+
+\end{frame}
+
+
+
+
+
+
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
