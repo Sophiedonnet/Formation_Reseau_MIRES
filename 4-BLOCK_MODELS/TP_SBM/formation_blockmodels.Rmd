@@ -9,9 +9,13 @@ editor_options:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
- setwd("D:/WORK_ALL/RECHERCHE/FORMATION_RECHERCHE/FORMATION_RESEAUX/2019_06_MIRES/Formation_Reseau_MIRES/4-BLOCK_MODELS/TP_SBM")
+setwd("D:/WORK_ALL/RECHERCHE/FORMATION_RECHERCHE/FORMATION_RESEAUX/2019_06_MIRES/Formation_Reseau_MIRES/4-BLOCK_MODELS/TP_SBM")
 ```
 
+- On commence par ouvrir le fichier *formation_blockmodels.r*. 
+- Je choisis mon répertoire de travail. 
+
+![](Plot/setwd.png)
 
 
 
@@ -20,7 +24,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ```{r import dataset,  echo = TRUE}
 # Relation between individuals 
-adjacency_individuals <- as.matrix(read.csv("ssna_adj_30n_all_ind_ssloop.txt", row.names=1))
+adjacency_individuals <- as.matrix(read.csv("ssna_adj_30n_all_ind_ssloop.csv", row.names=1))
 adjacency_individuals_binary <- 1 * (adjacency_individuals > 0)
 dim(adjacency_individuals)
 isSymmetric(adjacency_individuals_binary)
@@ -67,7 +71,7 @@ We consider that two individuals are in interaction if they exchange at least on
 
 - Plot of the adjacency matrix:
 
-```{r  tree tree bin plot, echo=TRUE} 
+```{r  adjbin plot, echo=TRUE} 
 plotMatrix(Mat = adjacency_individuals_binary,rowFG = 'individuals', colFG  = 'individuals')
 
 ```
@@ -86,7 +90,7 @@ plotMatrix(Mat = adjacency_individuals_binary,rowFG = 'individuals', colFG  = 'i
 ```{r SBM, echo=TRUE, eval = TRUE}
 sbm.bern <- BM_bernoulli("SBM",adjacency_individuals_binary)
 ```
-"SBM"" indicates that the adjacency is not symmetric (undirected network), it is important to specify it for statistical reasons. If the matrix is symmetric (undirected network), we use BM_bernoulli("SBM_sym",tree_bin) instead.
+"SBM"" indicates that the adjacency is not symmetric (undirected network), it is important to specify it for statistical reasons. If the matrix is symmetric (undirected network), we use BM_bernoulli("SBM_sym",adjacency_individuals_binary) instead.
 
 - Then we apply the inference method
  
@@ -104,14 +108,14 @@ save(sbm.bern,file = 'res_sbm_bern.Rdata')
 load(file = 'res_sbm_bern.Rdata')
 ```
 ```{r select SBM, echo=TRUE, eval = TRUE}
-Q = which.max(sbm.bern$ICL)
-Q
+bestmodel = which.max(sbm.bern$ICL)
+bestmodel
 ``` 
 
 
-- We can now extract the parameters of interest, namely ($\alpha$, $\pi$) and the nodes (here tree species) clustering $Z$  
+- We can now extract the parameters of interest, namely ($\alpha$, $\pi$) and the nodes (here individuals) clustering $Z$  
 ```{r extract param SBM, echo=TRUE, eval = TRUE}
-paramEstimSBM.bern <- extractParamBM(sbm.bern,Q)
+paramEstimSBM.bern <- extractParamBM(sbm.bern,bestmodel)
 paramEstimSBM.bern$pi
 paramEstimSBM.bern$alpha
 paramEstimSBM.bern$Z
@@ -119,17 +123,17 @@ paramEstimSBM.bern$Z
 
 - One can plot the reorganized matrix according to the clustering.
 
-```{r plot org treeb bin,  echo=TRUE, eval = TRUE}
+```{r plot org adj bin,  echo=TRUE, eval = TRUE}
 plotMatrix(adjacency_individuals_binary,'individuals','individuals', fileNameSave = NULL, clustering = list(row = paramEstimSBM.bern$Z))
 ``` 
 
 - Finally one can plot the macroview of the network.
 
-```{r plot BM network treebin,  echo=TRUE, eval = FALSE}
+```{r plot BM network adj,  echo=TRUE, eval = TRUE}
 G <- graph_from_adjacency_matrix(paramEstimSBM.bern$alpha, mode = c("directed"), weighted = TRUE, diag = TRUE)
 plot.igraph(G,vertex.size = paramEstimSBM.bern$pi*10,edge.width= abs(E(G)$weight)*2,vertex.color = 1:paramEstimSBM.bern$Q, layout = layout_nicely)
 ``` 
-![](Plot/BMnet_adjacencybin.png)
+
 
 - The composition of the clusters/blocks are given by:  
 ```{r list names blocks,  echo=TRUE, eval = TRUE}
@@ -145,7 +149,7 @@ In the weighted individuals interactions network, each edge is valued with the n
 
 - Plot of the adjacency matrix:
 
-```{r  tree tree plot, echo=TRUE} 
+```{r  adj plot, echo=TRUE} 
 plotMatrix(Mat = adjacency_individuals,rowFG = 'individual', colFG  = 'individual')
 ```
 
@@ -197,11 +201,10 @@ plotMatrix(adjacency_individuals,'individuals','individuals', fileNameSave = NUL
 - One can plot the macroview of the network.
 
 
-```{r plot BM network  poisson, echo=TRUE, eval = FALSE}
+```{r plot BM network  poisson, echo=TRUE, eval = TRUE}
 G <- graph_from_adjacency_matrix(paramEstimSBM.pois$lambda, mode = c("undirected"), weighted = TRUE, diag = TRUE)
 plot.igraph(G,vertex.size=paramEstimSBM.pois$pi*100,edge.width=abs(E(G)$weight)*0.5,vertex.color=1:paramEstimSBM.pois$Q, layout=layout_nicely)
 ``` 
-![](Plot/BMnet_adj.png)
 
 - The composition of the clusters/blocks are given by :  
 ```{r list names blocks Poisson,  echo=TRUE, eval = TRUE}
@@ -223,11 +226,11 @@ alluvial(A[,c(1,2)],freq=A$Freq)
 
 # Latent Block model 
 
-## Dataset : fungus-tree interactions
+## Dataset : individuals/species interactions
 
 - Plot of the incidence matrix
 
-```{r  tree fungis plot, echo=TRUE} 
+```{r  incidence plot, echo=TRUE} 
 plotMatrix(Mat = incidence_species_binary,rowFG = 'individuals', colFG  = 'species')
 ```
 
@@ -278,10 +281,10 @@ paramEstimLBM_bern$ZCol
 ```
 
 
-```{r plot org  tree fungis,  echo=TRUE, eval = TRUE}
+```{r plot org  incidence,  echo=TRUE, eval = TRUE}
 plotMatrix(incidence_species_binary,'individuals','species', fileNameSave = NULL, clustering = list(row = paramEstimLBM_bern$ZRow,col = paramEstimLBM_bern$ZCol))
 ``` 
-```{r plot BM network tree fungi,  echo=TRUE, eval = TRUE}
+```{r plot BM network incidence,  echo=TRUE, eval = TRUE}
 G <- graph_from_incidence_matrix(paramEstimLBM_bern$alpha, weighted = TRUE)
 plot(G,vertex.size=c(paramEstimLBM_bern$piRow*100, paramEstimLBM_bern$piCol*100), vertex.shape=c("circle", "square")[V(G)$type +1], edge.width=abs(E(G)$weight*2),vertex.color=1:sum(paramEstimLBM_bern$Q), layout=layout.bipartite)
 ``` 
@@ -297,7 +300,7 @@ In the individuals-species interactions network, an edge indicates if an individ
 
 - Plot of the incidence matrix
 
-```{r  tree fungis plot poiss, echo=TRUE} 
+```{r  incidence plot , echo=TRUE} 
 plotMatrix(Mat = incidence_species,rowFG = 'individuals', colFG  = 'species')
 ```
 

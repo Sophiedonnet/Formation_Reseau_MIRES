@@ -45,8 +45,10 @@ sbm.bern$estimate()
 
 ## ----save SBM, echo=FALSE, eval = FALSE----------------------------------
 ## save(sbm.bern,file = 'res_sbm_bern.Rdata')
+
+
 ## ----load SBM, echo=FALSE, eval = TRUE-----------------------------------
-##load(file = 'res_sbm_bern.Rdata')
+load(file = 'res_sbm_bern.Rdata')
 
 ## ----select SBM, echo=TRUE, eval = TRUE----------------------------------
 bestmodel = which.max(sbm.bern$ICL)
@@ -64,7 +66,7 @@ paramEstimSBM.bern$Z
 plotMatrix(adjacency_individuals_binary,'individuals','individuals', fileNameSave = NULL, clustering = list(row = paramEstimSBM.bern$Z))
 
 
-## ----plot BM network adj,  echo=TRUE, eval = FALSE-----------------------
+## ----plot BM network adj,  echo=TRUE, eval = TRUE------------------------
 G <- graph_from_adjacency_matrix(paramEstimSBM.bern$alpha, mode = c("directed"), weighted = TRUE, diag = TRUE)
 plot.igraph(G,vertex.size = paramEstimSBM.bern$pi*10,edge.width= abs(E(G)$weight)*2,vertex.color = 1:paramEstimSBM.bern$Q, layout = layout_nicely)
 
@@ -77,7 +79,6 @@ lapply(1:paramEstimSBM.bern$Q,function(q){rownames(adjacency_individuals_binary)
 plotMatrix(Mat = adjacency_individuals,rowFG = 'individual', colFG  = 'individual')
 
 
-
 ## ----SBM Poisson, echo=TRUE, eval = TRUE---------------------------------
 sbm.poiss <- BM_poisson("SBM",adjacency_individuals)
 
@@ -88,7 +89,7 @@ sbm.poiss$estimate()
 
 
 ## ----sload SBM poisson,echo=FALSE, eval =TRUE----------------------------
-##load('res_sbm_poiss.Rdata')
+#load('res_sbm_poiss.Rdata')
 
 
 ## ----select SBM poisson, echo=TRUE, eval = TRUE--------------------------
@@ -107,7 +108,7 @@ paramEstimSBM.pois$Z
 plotMatrix(adjacency_individuals,'individuals','individuals', fileNameSave = NULL, clustering = list(row = paramEstimSBM.pois$Z))
 
 
-## ----plot BM network  poisson, echo=TRUE, eval = FALSE-------------------
+## ----plot BM network  poisson, echo=TRUE, eval = TRUE--------------------
 G <- graph_from_adjacency_matrix(paramEstimSBM.pois$lambda, mode = c("undirected"), weighted = TRUE, diag = TRUE)
 plot.igraph(G,vertex.size=paramEstimSBM.pois$pi*100,edge.width=abs(E(G)$weight)*0.5,vertex.color=1:paramEstimSBM.pois$Q, layout=layout_nicely)
 
@@ -133,11 +134,11 @@ lbm_bern <- BM_bernoulli("LBM",incidence_species_binary)
 lbm_bern$estimate()
 
 ## ----LBM save,echo=FALSE,eval=FALSE--------------------------------------
-##save(lbm_bern,file = 'res_lbm_bern.Rdata')
+## save(lbm_bern,file = 'res_lbm_bern.Rdata')
 
 
-## ----LBM load,echo=FALSE,eval=TRUE---------------------------------------
-##load(file = 'res_lbm_bern.Rdata')
+## ----LBM #load,echo=FALSE,eval=TRUE---------------------------------------
+#load(file = 'res_lbm_bern.Rdata')
 
 
 ## ----select lBM  , echo=TRUE, eval = TRUE--------------------------------
@@ -176,8 +177,8 @@ lbm_pois$estimate()
 ## save(lbm_pois,file = 'res_lbm_pois.Rdata')
 
 
-## ----LBM pois load,echo=FALSE,eval=TRUE----------------------------------
-##load(file = 'res_lbm_pois.Rdata')
+## ----LBM pois #load,echo=FALSE,eval=TRUE----------------------------------
+#load(file = 'res_lbm_pois.Rdata')
 
 
 ## ----select lBM pois, echo=TRUE, eval = TRUE-----------------------------
