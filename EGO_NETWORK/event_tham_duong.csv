@@ -1,0 +1,106 @@
+label,source,label,target,Type of transaction,"Nature of the material
+"
+Vi Van Sau,1,Hoang Thanh Bich,2,loan,paddy
+Vi Van Sau,1,La Van Thao,3,loan,paddy
+Vi Van Sau,1,Luc Van Thuong- Ba Men,4,sale,paddy
+La Van Thao,3,La Van Tam,5,gift,seedling
+La Van Thao,3,La Van Ten,6,gift,seedling
+Hoang Van Hu,7,Luc Van Thuong- Ba Men,4,sale,paddy
+Hoang Van Hu,7,Luc Van Thuong- Ba Men,4,gift,selected seed
+Vi Van Sinh,8,Luc Van Thuong- Ba Men,4,sale,paddy
+Ba Hoa-Phang,9,Luc Van Thuong- Ba Men,4,gift,seedling
+Ha Van Vân,10,La Van Tam,5,gift,paddy
+Ha Van Vân,10,La Van Tam,5,exchange,paddy
+Ha Van Thinh,11,La Van Tam,5,loan,paddy
+La Van Quyen,12,La Van Ten,6,gift,seedling
+Nguyen Van Mung,13,La Van Ten,6,gift,seedling
+Hoang Van Hu,7,La Van Nam,14,sale,selected seed
+Hoang Van Hu,7,Hoang Van Thien,15,sale,selected seed
+Hoang Van Hu,7,La Thi Phung,16,gift,selected seed
+Vi Van Sinh,8,Nguyen Van Thuong,17,sale,selected seed
+Vi Van Sinh,8,Mr X,18,sale,selected seed
+Vi Van Sinh,8,Ha Van Tuan,19,sale,selected seed
+Ha Van Vân,10,La Van Khoong,20,exchange,selected seed
+Ha Van Vân,10,La Van Khoong,20,exchange,selected seed
+Ha Van Vân,10,Ha Van Huong,21,sale,selected seed
+Ha Van Vân,10,La Van Minh,22,sale,selected seed
+Hoa Van Hung,23,Nguyen Van Mung,13,exchange,paddy
+Nguyen Van Mung,13,Nguyen Van Hoa,24,sale,selected seed
+Nguyen Van Mung,13,Luong Van Ta,25,exchange,selected seed
+Nguyen Van Mung,13,Nguyen Van Hoa,24,gift,seedling
+Nguyen Van Mung,13,Luong Van Ta,25,gift,seedling
+La Van Quan,26,La Van Khoong,20,sale,paddy
+Hoang Van Phong,27,La Van Khoong,20,gift,seedling
+Nguyen Van Thien,28,La Van Khoong,20,gift,seedling
+Trieu Van Phu,29,La Van Khoong,20,gift,seedling
+Luong Van Manh,30,La Van Khoong,20,gift,seedling
+Luong Van Manh,30,La Van Khoong,20,gift,seedling
+Ha Van Chuong,31,Ha Van Huong,21,sale,selected seed
+Ha Van Thiep,32,Ha Van Huong,21,exchange,paddy
+Ha Van Thiep,32,La Van Minh,22,exchange,paddy
+Hoa Van Hung,23,Mr Y thong gia Hoa Van Hung,33,loan,paddy
+Me Thom,34,Nguyen Van Hoa,24,exchange,paddy
+Mr Z bo me vo Ng V Hoa,35,Nguyen Van Hoa,24,sale,selected seed
+Nguyen Van Thinh,36,Nguyen Van Hoa,24,loan,paddy
+Nguyen Van Minh,37,Nguyen Van Hoa,24,exchange,paddy
+Luong Van Ta,25,La Van Son-La Thi Lan,38,gift,seedling
+Luong Van Ta,25,Mr. A (Thong gia ho Ta),39,gift,seedling
+Luong Van Ta,25,Ha Van Tuàn,40,gift,seedling
+Luong Van Ta,25,Ha Van Xien,41,gift,seedling
+Luong Van Ta,25,Luong Van Tuan,42,gift,seedling
+Luong Van Ta,25,La Van Son-La Thi Lan,38,thieft,seedling
+Ha Van Chuong,31,Ha Van Thành,43,gift,seedling
+Ha Van Chuong,31,Hoang Minh Tom,44,gift,paddy
+Ha Van Chuong,31,Trieu Van Hoa,45,gift,paddy
+Ha Van Chuong,31,Truong Van Huong,46,gift,paddy
+Ha Van Chuong,31,Hoang Van Thang,47,gift,paddy
+Ha Van Chuong,31,Ha Van Tâm-Ha Thi Quy,48,exchange,paddy
+Ha Van Chuong,31,Ha Van Dong,49,exchange,paddy
+Ha Van Chuong,31,La Van Son-La Thi Lan,38,loan,paddy
+Ha Van Lan,50,Ha Van Thiep,32,exchange,selected seed
+Ha Van Thiep,32,La Van Cuong,53,exchange,paddy
+Ha Van Thiep,32,Ha Van Lanh (Thuong),51,exchange,paddy
+Ha Van Thiep,32,Ha Van Lan,50,exchange,paddy
+Ha Van Thiep,32,La Van Thinh,52,exchange,paddy
+La Van Thien,54,La Van Son-La Thi Lan,38,gift,seedling
+Ha Van Thiep,32,La Van Son-La Thi Lan,38,sale,selected seed
+La Van Ninh,55,Ha Van Xien,41,gift,paddy
+Ha Van Xien,41,Ong Phân,56,sale,paddy
+Ha Van Xien,41,Lieu Van Sinh,57,exchange,paddy
+Ha Van Xien,41,Luong Van Tuan,42,sale,selected seed
+Ha Van Xien,41,Ha Van Kien,58,sale,paddy
+Ong Tai,59,Luong Van Tuan,42,sale,paddy
+Ha Van Thiep,32,Ha Van Dong,49,exchange,selected seed
+Ha Van Lan,50,Ha Van Dong,49,loan,paddy
+Ha Van Dinh,60,Ha Van Dong,49,loan,paddy
+Ha Van Dong,49,Ha Van Manh,61,gift,seedling
+Ha Van Dong,49,La Van Do,62,gift,seedling
+Ha Van Dong,49,Ha Van Manh,61,gift,seedling
+Ha Van Tiên Beo,63,Ha Van Lanh (Thuong),51,gift,seedling
+Ha Van Tiên Beo,63,Ha Van Lanh (Thuong),51,gift,seedling
+Ha Van Lanh (Thuong),51,Ha Thi Thiet,64,gift,seedling
+Ha Van Dinh,60,La Van Thinh,52,sale,paddy
+La Van Thinh,52,Ha Van Tham,65,gift,seedling
+La Van Thinh,52,Ha Van Thiep,32,gift,seedling
+La Van Cuong,53,La Van Hon,66,loan,selected seed
+Vi Van Sang,67,La Van Thien,54,exchange,selected seed
+Ha Van Tien,68,Ha Van Kien,58,sale,selected seed
+Ha Van Tien,68,Ha Van Kien,58,sale,selected seed
+Vi Van Sâm,69,Ha Van Kien,58,compensation,seedling
+Vi Van Sâm,69,Phung Kim Thanh,70,gift,selected seed
+Vi Van Sâm,69,Luong Van Hien,71,exchange,paddy
+Vi Van Sâm,69,Ma Xuan Tung,72,gift,paddy
+Vi Van Sâm,69,Ha Van Chuong B.Tham,73,gift,paddy
+Phung Kim Thanh,70,Trieu Van San (Phu),74,loan,paddy
+Phung Kim Thanh,70,Phung Kim Phin,75,gift,seedling
+Ha Van Duong,76,Ha Van Chuong B.Tham,73,gift,selected seed
+Ha Van Chuong B.Tham,73,La Van To,77,gift,seedling
+Ha Van Chuong B.Tham,73,Hoa Van Tiên (gia),78,gift,seedling
+Trieu Van Nhat,79,Trieu Van San (Phu),74,gift,seedling
+Phung Kim Phin,75,Trieu Sinh,80,gift,seedling
+Ha Van Duong,76,Ha Van Thuong-Ha Thi Duyen (con dau),81,gift,seedling
+La Van To,77,Duong Van Bong,82,exchange,paddy
+Hoa Van Tinh,83,Hoa Van Tiên (gia),78,gift,selected seed
+Ha Van Duong,76,Ha Van Thuong-Ha Thi Duyen (con dau),81,gift,selected seed
+Ha Van Duong,76,Ha Van Thuong-Ha Thi Duyen (con dau),81,gift,paddy
+Vi Van Sang,67,Ha Van Phong-Ngo Thi Dong,84,gift,seedling

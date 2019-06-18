@@ -1,0 +1,448 @@
+---
+title: "EgoNetwork"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Utilisation de la librairie igraph
+
+igraph  <https://igraph.org/r/doc/> est la librairie d'analyse de réseaux la plus compléte. Elle est disponible sous R et sous Python. 
+
+On trouvera une description succinct de la libraire [ici](https://igraph.org/r/doc/aaa-igraph-package.html)
+
+
+
+
+
+
+```{r , echo=FALSE}
+setwd("~/Formation/réseaux/ego")
+```
+
+
+```{r , message= FALSE}
+
+library(igraph)
+
+## on travaille sur le réseau binaire oriente des données Vanuatu
+data.network<-read.table("ssna_adj_30n_all_ind_ssloop.csv",sep=",",header=T,row.names=1)
+data.network.bin<-data.network
+data.network.bin[data.network.bin>0]<-1
+network<-graph_from_adjacency_matrix(as.matrix(data.network.bin), mode = "directed",weighted=T)
+
+network
+```
+
+
+
+## Représentation du réseau
+
+```{r }
+
+plot(network,layout = layout_with_kk,vertex.label=substr(V(network)$name,5,7))
+```
+
+La commande **tkplot** permet de créer un graphe interactif. On trouvera un tutoriel sur la visualisation de graphes sur la page de Katya Ognyanova <https://kateto.net/>, notamment [ici](https://kateto.net/network-visualization). La page [d'introduction](https://kateto.net/networks-r-igraph) à igraph est particulièrement intéressante. 
+
+
+## Quelques commandes de base
+
+Liste des noeuds
+```{r }
+V(network)
+```
+
+
+Liste des arêtes
+```{r }
+E(network)
+```
+
+
+On peut obtenir sa matrice d'adjacence, par défaut sous la forme d'une matrice creuse. Pour certaines opérations, on privilégiera la forme non creuse. 
+```{r }
+adj= as_adjacency_matrix(network)
+adj[1:10,1:10]
+adj= as_adjacency_matrix(network,sparse=F)
+adj[1:10,1:10]
+```
+
+
+Des attributs peuvent être associés aux noeuds ainsi qu'aux arêtes. 
+```{r }
+V(network)$name
+vertex_attr(network)
+```
+
+**Exemple**  Ajout d'un attribut sex sur les noeuds (tiré aléatoirement)
+```{r }
+V(network)$sex= sample(c("M","F"),gorder(network),replace=T)
+vertex_attr(network)
+```
+
+
+```{r }
+edge_attr(network)
+E(network)$exchange = "plantule"
+edge_attr(network)
+```
+Les commandes delete_edges et add_edges permettent d'ajouter et retirer des arêtes. 
+```{r }
+gsize(network)
+gsize(add_edges(network,c("IND_088","IND_092") ))
+
+
+```
+
+## Données Tham Thuong d'Emmanuel Pannier
+
+
+```{r }
+event_tham_duong <- read.csv("event_tham_duong.csv", sep=",",header=T)
+dim(event_tham_duong)
+node_tham_duong <- read.csv("node_tham_duong.csv", sep=",",header=T)
+dim(node_tham_duong)
+tham_duong <- graph_from_data_frame(d=event_tham_duong[,c(2,4,5:6)], vertices=node_tham_duong[,c(3,2,4:11)], directed=T) 
+gorder(tham_duong)
+gsize(tham_duong)
+tkplot(tham_duong)
+vertex_attr_names(tham_duong)
+vertex.attributes(tham_duong,c('1','2'))
+
+edge_attr_names(tham_duong)
+some_edges = E(tham_duong)[as.character(1:10) %->%as.character(1:10)]
+edge_attr(tham_duong,name= "Type.of.transaction",index= some_edges)
+```
+
+
+
+# Explorons le réseau Vanuatu de Sophie Caillon
+
+Supposons que S.C. n'a l'opportunité de n'interroger qu'une partie de la population. De plus, pour chaque personne interrogée, S.C. ne peut renseigner que les liens **entrants**. Quel impact auront le budget d'échantillonnage ainsi que la méthode d'échantillonnage sur l'estimation des indicateurs du réseau? 
+
+
+Chargement de quelques fonctions annexes
+```{r }
+source("ego_functions.R")
+```
+
+On se donne d'abord un budget de 4 noeuds qu'on tire aléatoirement. Cela nous permet de découvrir l'egonetwork associé aux voisins (donneurs) de ces quatre noeuds.
+
+
+```{r }
+budget = 4
+nodes.sampled = sample(V(network), budget)
+network.sampled= sample.egonetwork(network,budget, mode="in")
+plot(network.sampled)
+```
+
+
+
+Les noeuds en rouge sont les noeuds effectivement **explorés**. Les noeuds en bleus sont les voisins découvers mais  **non explorés** (individus ayant donné des semences à un individu exploré).
+
+Les noeuds de l'objet __network_sampled__ ont deux nouveaux attributs: __color__ et __explored__ qui indiquent si le noeud a été exploré ou pas. 
+
+
+
+Après cette première phase de terrain, S.C. souhaite visiter 4 individus parmi ceux découverts mais non explorés (méthode du snowball)
+
+
+
+
+
+```{r }
+budget.2 = 4
+nodes.sampled.snow=   sample(neighbors.build(network,nodes.sampled,mode="in"),budget.2)
+network.sampled.snow = build_egonetwork(network,unique(c(nodes.sampled,nodes.sampled.snow)),mode="in")
+gorder(network.sampled)
+gorder(network.sampled.snow)
+plot(network.sampled.snow)
+```
+
+
+Pour certaines analyses, on utilisera uniquement le sous-réseau restreint aux individus effectivement observés. 
+
+
+```{r }
+## Construction du sous-réseau induit uniquement par les noeuds echantillonné
+network.sampled.snow.induced = induced_subgraph(network.sampled.snow,V(network.sampled.snow)[V(network.sampled.snow)$explored==T])
+gorder(network.sampled.snow.induced)
+plot(network.sampled.snow.induced)
+```
+
+
+
+# Compaison de statistiques descriptives sur les réseaux échantillonnés 
+
+## Estimation de moyennes et variances des degrés entrants
+
+**Question**:  A votre avis, quel mode d'estimation doit-on privilégier? 
+
+
+```{r }
+# pour le réseau entier
+deg=degree(network,mode="in")
+c(mean(deg),var(deg)) 
+plot( x=0:max(deg), y=1-degree.distribution(network,mode="in",cumulative=T), pch=19, cex=1.2, col="orange", xlab="Degree",ylab="Cumulative Frequency", main= "Complete Network")
+
+
+# pour l'échantillon boule de neige
+deg.unc = degree(network.sampled.snow,mode="in") 
+sort(deg.unc)
+c(mean(deg.unc),var(deg.unc))
+plot( x=0:max(deg.unc), y=1-degree.distribution(network.sampled.snow,mode="in",cumulative=T), pch=19, cex=1.2, col="orange", xlab="Degree",ylab="Cumulative Frequency",main="Observed Network")
+
+
+
+# pour l'échantillon boule de neige avec correction
+deg.cor= degree(network.sampled.snow,mode="in")[V(network.sampled.snow)$explored==T]
+sort(deg.cor)
+c(mean(deg.cor),var(deg.cor))
+plot( x=0:max(deg.cor), y=(ecdf(deg.cor)(0:max(deg.cor))), pch=19, cex=1.2, col="orange", xlab="Degree",ylab="Cumulative Frequency",main="Observed Network after correction")
+
+
+
+# pour  le réseau induit
+deg.ind= degree(network.sampled.snow.induced,mode="in")
+sort(deg.ind)
+c(mean(deg.ind),var(deg.ind))
+plot( x=0:max(deg.ind), y=(ecdf(deg.ind)(0:max(deg.ind))), pch=19, cex=1.2, col="orange", xlab="Degree",ylab="Cumulative Frequency",main="Induced Network")
+
+```
+
+
+
+## Estimation des moyennes et variances des degrés sortants? 
+
+**Question** Est-il facile d'estimer ces quantités? 
+
+
+```{r }
+# pour le réseau entier
+deg=degree(network,mode="out")
+c(mean(deg),var(deg)) 
+
+
+# pour l'échantillon boule de neige
+deg.unc = degree(network.sampled.snow,mode="out") 
+sort(deg.unc)
+c(mean(deg.unc),var(deg.unc))
+
+
+# pour l'échantillon boule de neige avec correction
+deg.cor= degree(network.sampled.snow,mode="out")[V(network.sampled.snow)$explored==T]
+sort(deg.cor)
+c(mean(deg.cor),var(deg.cor))
+
+
+# pour  le réseau induit
+deg.ind= degree(network.sampled.snow.induced,mode="out")
+sort(deg.ind)
+c(mean(deg.ind),var(deg.cor))
+```
+
+
+## Calcul de la réciprocité
+
+Comment estimer au mieux la réciprocité? Quel mode d'échantillonnage privilégier?s
+
+```{r }
+reciprocity(network.sampled.snow.induced)
+reciprocity(network.sampled.snow)
+reciprocity(network.sampled)
+reciprocity(network)
+```
+
+
+
+## Calcul de la transitivité
+
+**Question** Comment estimer au mieux la transitivité? Quel mode d'échantillonnage privilégier?
+
+```{r }
+transitivity(network.sampled.snow.induced)
+transitivity(network.sampled)
+transitivity(network.sampled.snow)
+transitivity(network)
+```
+**Remarque**: on peut eventuellement améliorer l'estimation de la transitivité en considérant tous les triplets qui contiennent au moins 2 noeuds explorés, mais cela requiert d'écrire une fonction ad-hoc.
+
+
+## Calcul de centralité
+
+On travaille sur une version non dirigée du réseau
+```{r }
+network.und= as.undirected(network)
+```
+
+Calcul des trois indices de centralité sur le réseau complet
+```{r }
+ev.cent<-eigen_centrality(network.und)$vector
+clo.cent<-closeness(network.und,normalized=T)
+be.cent<-betweenness(network.und,normalized=T)
+```
+
+On va se concentrer sur les noeuds explorés et voir dans quels mesures leurs valeurs de centralité sont bien estimées.
+
+```{r }
+# vecteur des noeuds échantillonnés par les deux étapes du snowball
+nodes.sampled.snow = sort(unique(c(nodes.sampled,nodes.sampled.snow)))
+sort(ev.cent[nodes.sampled.snow])
+sort(clo.cent[nodes.sampled.snow])
+sort(be.cent[nodes.sampled.snow])
+```
+
+Comparaison des trois indices de centralités (corrélation de Kendall)
+ ```{r }
+cor(ev.cent[nodes.sampled.snow],clo.cent[nodes.sampled.snow],method="kendall")
+cor(ev.cent[nodes.sampled.snow],be.cent[nodes.sampled.snow],method="kendall")
+```
+
+On calcule maintenant les indices de centralités sur le graphe échantillonné (induit).
+```{r }
+ev.cent.snow =eigen_centrality(as.undirected(network.sampled.snow.induced))$vector
+clo.cent.snow = closeness(network.sampled.snow.induced,normalized=T)
+be.cent.snow = betweenness(as.undirected(network.sampled.snow.induced),normalized=T)
+```
+
+ Comparaison avec les valeurs calculé à partir du graphe entier. 
+```{r }
+cor(ev.cent[nodes.sampled.snow],ev.cent.snow,method="kendall")
+cor(be.cent[nodes.sampled.snow],be.cent.snow,method="kendall")
+cor(clo.cent[nodes.sampled.snow],clo.cent.snow,method="kendall")
+```
+
+
+# Tests de permutation 
+
+
+Les test par permutation sont simples à réaliser pour le graphe **induit** mais il peut y avoir des problèmes de contraintes lorsque l'échantillonnage est faible. 
+
+
+On s'intéresse ici à tester si au moins l'un des noeuds échantillonnés a une closeness centralité significativement élevé. 
+```{r }
+sample.config.directed<-lapply(1:100,function(x) sample_degseq(degree(network.sampled.snow.induced,mode="out"), degree(network.sampled.snow.induced,mode="in"), method = "simple.no.multiple"))
+max.be.perm<-sapply(1:100,function(x) max(betweenness(sample.config.directed[[x]],normalized=T)))
+
+plot(density(max.be.perm))
+abline(v=max(be.cent.snow),col="red")
+max.be.perm.distrib<-ecdf(max.be.perm)
+1-max.be.perm.distrib(max(be.cent.snow))
+```
+
+On peut comparer ce test par permutation avec ce qu'on aurait obtenu sur le réseau entier.
+```{r , echo=FALSE}
+sample.config.directed<-lapply(1:100,function(x) sample_degseq(degree(network,mode="out"), degree(network,mode="in"), method = "simple.no.multiple"))
+max.be.perm<-sapply(1:100,function(x) max(betweenness(sample.config.directed[[x]],normalized=T)))
+
+plot(density(max.be.perm))
+abline(v=max(be.cent),col="red")
+max.be.perm.distrib<-ecdf(max.be.perm)
+1-max.be.perm.distrib(max(be.cent))
+```
+
+
+
+
+# Explorations et comparaisons de plans d'Echantillonnage
+
+On se place maintenant en amont du terrain et on souhaite  choisir un  __bon__ plan d'échantillonnage. 
+
+Pour simplifier, on supposera ici que notre critére de qualité est d'estimer au mieux la __transitivité__ du réseau (non dirigé), mais la stratégie ici pourra être étendue à d'autres critères. 
+
+
+
+
+## Etape 1: Choisir un réseau qui nous semble réaliste 
+
+On pourrait prendre des réseaux échantillonnés sur des précédents terrains. 
+
+Ici on en choisit deux modéles aléatoires classiques: le graphe géométrique et le graphe à blocs stochastiques. Idéalement on fera varier les paramêtres du modèle afin d'avoir des conclusions plus robustes.
+```{r }
+geometric.network= sample_grg(200, 0.1, torus = FALSE, coords = FALSE)
+V(geometric.network)$name= as.character(1:200)
+tkplot(geometric.network)
+mean(degree(geometric.network))
+trans.geom= transitivity(geometric.network)
+```
+
+Deuxième modele: un modèle à blocs stochastiques. 
+```{r }
+prob = matrix(0.01,4,4)
+diag(prob)= rep(0.07,4)
+sbm.network= sample_sbm(200, prob, rep(50,4))
+V(sbm.network)$name= as.character(1:200)
+tkplot(sbm.network)
+mean(degree(sbm.network))
+transitivity(sbm.network)
+```
+
+## Etape 2: comparaison de méthodes d'échantillonnage.
+
+Questions: 
+
+* Quelle est le budget minimal (en nombre de noeuds explorés) permettant d'estimer raisonnablement bien la transitivité?
+* Pour un budget donné faut-il privilégier un échantillonnage boule de neige et si oui à combien d'étapes?
+
+```{r }
+budget= seq(24,120,by=12)
+```
+
+
+Comparaison d'échantillonnage d'ego-network, et de snowball à 2, 3 et 4 étapes.
+
+```{r }
+nbr.exp=1
+Proba= matrix(0,4,length(budget))
+Error= matrix(0,4,length(budget))
+colnames(Proba)= budget
+colnames(Error)= budget
+for (i in 1:(length(budget))){
+  transitivity.sampling= sapply(1:nbr.exp,function(x) transitivity(induced.sample(sample.egonetwork(geometric.network,budget[i],mode="all"))))
+  Proba[1,i]= sum(is.nan(transitivity.sampling))/nbr.exp
+  Error[1,i]=mean(abs((transitivity.sampling- trans.geom)/trans.geom),na.rm=T)
+  for (j in 2:4){
+    transitivity.sampling= sapply(1:nbr.exp,function(x) transitivity(induced.sample(sample.snowball(geometric.network,j,rep(budget[i]/j,j),mode="all"))))  
+    Proba[j,i]= sum(is.nan(transitivity.sampling))/nbr.exp
+    Error[j,i]=mean(abs((transitivity.sampling- trans.geom)/trans.geom),na.rm=T)
+  }
+}
+
+Proba # probabilité que l'estimateur produise NaN
+Error # Erreur relative
+```
+
+
+Même comparaison pour le modèle à blocs stochastiques
+```{r , echo=FALSE}
+nbr.exp=1
+Proba= matrix(0,4,length(budget))
+Error= matrix(0,4,length(budget))
+colnames(Proba)= budget
+colnames(Error)= budget
+for (i in 1:(length(budget))){
+  transitivity.sampling= sapply(1:nbr.exp,function(x) transitivity(induced.sample(sample.egonetwork(sbm.network,budget[i],mode="all"))))
+  Proba[1,i]= sum(is.nan(transitivity.sampling))/nbr.exp
+  Error[1,i]=mean(abs((transitivity.sampling- trans.geom)/trans.geom),na.rm=T)
+  for (j in 2:4){
+    transitivity.sampling= sapply(1:nbr.exp,function(x) transitivity(induced.sample(sample.snowball(sbm.network,j,rep(budget[i]/j,j),mode="all"))))  
+    Proba[j,i]= sum(is.nan(transitivity.sampling))/nbr.exp
+    Error[j,i]=mean(abs((transitivity.sampling- trans.geom)/trans.geom),na.rm=T)
+  }
+}
+
+Proba # probabilité que l'estimateur produise NaN
+Error # Erreur relative
+```
+
+**Pour aller plus loin**: il faudrait tester d'autres paramêtres pour les modèles de réseaux pour en tirer des conclusions plus robustes. 
+
+
+
+
+
+
+
