@@ -143,8 +143,8 @@ extractParamBM <- function(BMobject,Q){
       1:res$Q[1]
     )
     oCol <- switch(model,
-      poisson = order(matrix(res$piRow,nrow = 1) %*% res$lambda,decreasing = TRUE),
-      bernoulli  =  order(matrix(res$piRow,nrow = 1) %*% res$alpha,decreasing = TRUE),
+      poisson = order(c(matrix(res$piRow,nrow = 1) %*% res$lambda),decreasing = TRUE),
+      bernoulli  =  order(c(matrix(res$piRow,nrow = 1) %*% res$alpha),decreasing = TRUE),
       1:res$Q[2]
     )
 
