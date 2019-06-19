@@ -1,6 +1,6 @@
 ## ----setup, include=FALSE------------------------------------------------
 knitr::opts_chunk$set(echo = FALSE)
-setwd("D:/WORK_ALL/RECHERCHE/FORMATION_RECHERCHE/FORMATION_RESEAUX/2019_06_MIRES/Formation_Reseau_MIRES/4-BLOCK_MODELS/TP_SBM")
+#setwd("D:/WORK_ALL/RECHERCHE/FORMATION_RECHERCHE/FORMATION_RESEAUX/2019_06_MIRES/Formation_Reseau_MIRES/4-BLOCK_MODELS/TP_SBM")
 
 
 ## ----import dataset,  echo = TRUE----------------------------------------
@@ -24,7 +24,7 @@ dim(incidence_species)
 library(blockmodels)
 library(igraph)
 library(alluvial)
-library(ggplot2)
+#library(ggplot2)
 
 
 ## ----source function,  echo = TRUE, message=FALSE------------------------
@@ -38,8 +38,6 @@ plotMatrix(Mat = adjacency_individuals_binary,rowFG = 'individuals', colFG  = 'i
 
 ## ----SBM, echo=TRUE, eval = TRUE-----------------------------------------
 sbm.bern <- BM_bernoulli("SBM",adjacency_individuals_binary)
-
-
 ## ----estimate SBM, echo=TRUE, eval = FALSE-------------------------------
 sbm.bern$estimate()
 
@@ -66,15 +64,19 @@ plotMatrix(adjacency_individuals_binary,'individuals','individuals', fileNameSav
 
 ## ----plot BM network adj,  echo=TRUE, eval = FALSE-----------------------
 G <- graph_from_adjacency_matrix(paramEstimSBM.bern$alpha, mode = c("directed"), weighted = TRUE, diag = TRUE)
-plot.igraph(G,vertex.size = paramEstimSBM.bern$pi*10,edge.width= abs(E(G)$weight)*2,vertex.color = 1:paramEstimSBM.bern$Q, layout = layout_nicely)
+plot.igraph(G,vertex.size = paramEstimSBM.bern$pi*100,edge.curved = 0.2,edge.width = abs(E(G)$weight)*10,vertex.color = 1:paramEstimSBM.bern$Q, layout = layout_nicely)
 
 
 ## ----list names blocks,  echo=TRUE, eval = TRUE--------------------------
 lapply(1:paramEstimSBM.bern$Q,function(q){rownames(adjacency_individuals_binary)[paramEstimSBM.bern$Z == q]})
 
 
+
+########################### Passage au Poisson = graphe valué
+
 ## ----adj plot, echo=TRUE-------------------------------------------------
 plotMatrix(Mat = adjacency_individuals,rowFG = 'individual', colFG  = 'individual')
+
 
 
 
@@ -108,8 +110,8 @@ plotMatrix(adjacency_individuals,'individuals','individuals', fileNameSave = NUL
 
 
 ## ----plot BM network  poisson, echo=TRUE, eval = FALSE-------------------
-G <- graph_from_adjacency_matrix(paramEstimSBM.pois$lambda, mode = c("undirected"), weighted = TRUE, diag = TRUE)
-plot.igraph(G,vertex.size=paramEstimSBM.pois$pi*100,edge.width=abs(E(G)$weight)*0.5,vertex.color=1:paramEstimSBM.pois$Q, layout=layout_nicely)
+G <- graph_from_adjacency_matrix(paramEstimSBM.pois$lambda, mode = c("directed"), weighted = TRUE, diag = TRUE)
+plot.igraph(G,vertex.size=paramEstimSBM.pois$pi*100,edge.curved = 0.1,edge.width=abs(E(G)$weight)*0.5,vertex.color=1:paramEstimSBM.pois$Q, layout=layout_nicely)
 
 
 ## ----list names blocks Poisson,  echo=TRUE, eval = TRUE------------------
@@ -124,6 +126,8 @@ A <- A[w,]
 alluvial(A[,c(1,2)],freq=A$Freq)
 
 
+
+######################## 
 ## ----incidence plot, echo=TRUE-------------------------------------------
 plotMatrix(Mat = incidence_species_binary,rowFG = 'individuals', colFG  = 'species')
 
@@ -164,6 +168,8 @@ G <- graph_from_incidence_matrix(paramEstimLBM_bern$alpha, weighted = TRUE)
 plot(G,vertex.size=c(paramEstimLBM_bern$piRow*100, paramEstimLBM_bern$piCol*100), vertex.shape=c("circle", "square")[V(G)$type +1], edge.width=abs(E(G)$weight*2),vertex.color=1:sum(paramEstimLBM_bern$Q), layout=layout.bipartite)
 
 
+
+###############################" 
 ## ----incidence plot , echo=TRUE------------------------------------------
 plotMatrix(Mat = incidence_species,rowFG = 'individuals', colFG  = 'species')
 

@@ -91,7 +91,7 @@ extractParamBM <- function(BMobject,Q){
     res$theta <-  BMobject$model_parameters[Q][[1]]$beta
   }
 
-  if (model == 'bernoulli_covariates') { ### a vérifier???
+  if (model == 'bernoulli_covariates') { ### a v??rifier???
     res$alpha <- BMobject$model_parameters[Q][[1]]$pi
     res$theta <-  BMobject$model_parameters[Q][[1]]$beta
   }
@@ -153,6 +153,10 @@ extractParamBM <- function(BMobject,Q){
     res$alpha <- res$alpha[oRow,oCol]
     res$tauRow <- res$tauRow[,oRow]
     res$tauCol <- res$tauCol[,oCol]
+    
+    if(is.vector(res$tauCol)){res$tauCol = matrix(res$tauCol,ncol=1)}
+    if(is.vector(res$tauRow)){res$tauRow = matrix(res$tauRow,ncol=1)}
+    
     res$ZRow <- apply(res$tauRow, 1, which.max)
     res$ZCol <- apply(res$tauCol, 1, which.max)
 
